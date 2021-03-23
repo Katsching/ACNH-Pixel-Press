@@ -4,8 +4,10 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Threading;
+using System.Threading.Tasks;
 using ColorMine.ColorSpaces;
 using ColorMine.ColorSpaces.Comparisons;
+using static System.Threading.Tasks.Task;
 
 namespace AcnhBulletinPrinter
 {
@@ -89,7 +91,7 @@ namespace AcnhBulletinPrinter
         /**
          * Draw the image on the board
          */
-        public void DrawImage(int pollingRate, CancellationToken token)
+        public async Task DrawImage(int pollingRate, CancellationToken token)
         {
             foreach (var pixel in _pixelList)
             {
@@ -100,7 +102,7 @@ namespace AcnhBulletinPrinter
 
                 DrawPoint(pixel.AcnhColor, pixel.xPixelCoordinate, pixel.YPixelCoordinate);
                 // numbers from testing
-                Thread.Sleep(pollingRate + 84);
+                await Delay(pollingRate + 88, token);
             }
         }
 

@@ -21,6 +21,7 @@ namespace AcnhBulletinPrinter
         private int _pollingRate;
         private BulletinDrawing _bulletinDrawing;
         private CancellationTokenSource source;
+        private Task drawImage;
 
 
         public Form1()
@@ -88,14 +89,23 @@ namespace AcnhBulletinPrinter
             }
         }
 
-        private void drawButton_Click(object sender, EventArgs e)
+        private async void drawButton_Click(object sender, EventArgs e)
         {
-            
+            drawButton.Enabled = false;
+            AddLogText("Drawing, please don't do anything on your console until it is finished.");
             source = new CancellationTokenSource();
             var token = source.Token;
-            var task = Task.Run(() => _bulletinDrawing.DrawImage(_pollingRate, token), token);
-            AddLogText("Drawing, please don't do anything on your console until it is finished.");
-            drawButton.Enabled = false;
+            try
+            {
+                var drawImage = Task.Run(() => _bulletinDrawing.DrawImage(_pollingRate, token), token);
+                await drawImage;
+            }
+            catch (TaskCanceledException ex)
+            {
+                AddLogText("Drawing has been cancelled");
+            }
+            drawButton.Enabled = true;
+
         }
 
         private void imageButton_Click(object sender, EventArgs e)

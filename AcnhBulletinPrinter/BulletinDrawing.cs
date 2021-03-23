@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Threading;
 using ColorMine.ColorSpaces;
 using ColorMine.ColorSpaces.Comparisons;
 
@@ -88,16 +89,24 @@ namespace AcnhBulletinPrinter
         /**
          * Draw the image on the board
          */
-        public void DrawImage()
+        public void DrawImage(int pollingRate, CancellationToken token)
         {
             foreach (var pixel in _pixelList)
             {
+                if (token.IsCancellationRequested)
+                {
+                    return;
+                }
+
                 DrawPoint(pixel.AcnhColor, pixel.xPixelCoordinate, pixel.YPixelCoordinate);
+                // numbers from testing
+                Thread.Sleep(pollingRate + 84);
             }
         }
 
         public double CalculateDuration()
         {
+            // numbers from testing
             double duration = Math.Round(_pixelList.Count * 0.062 * 2.15);
             return duration;
         }

@@ -30,7 +30,7 @@ namespace AcnhBulletinPrinter
             Directory.CreateDirectory(configPath);
             var folderPath = configPath + "\\config.json";
         
-            var scales = new[] {2, 4};
+            var scales = new[] {2, 4, 5};
             foreach(var scale in scales )
             {
                 scaleCombobox.Items.Add(scale);

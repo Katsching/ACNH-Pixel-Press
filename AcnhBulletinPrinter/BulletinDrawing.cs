@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Threading;
 using ColorMine.ColorSpaces;
 using ColorMine.ColorSpaces.Comparisons;
 
@@ -18,7 +17,8 @@ namespace AcnhBulletinPrinter
         private AcnhColor _yellowColor;
         private AcnhColor _blackColor;
         private AcnhColor _whiteColor;
-        private readonly List<AcnhColor> RgbList = new();
+        private readonly List<AcnhColor> _rgbList = new();
+        private readonly List<PicturePixel> _pixelList = new();
 
         public static string ConnectSysbot(string ipAddress, int pollingRate)
         {
@@ -38,22 +38,24 @@ namespace AcnhBulletinPrinter
             return message;
         }
 
-        public void SetColors(Rgb Red, Rgb Blue, Rgb Yellow, Rgb Black, Rgb White)
+        public void SetColors(Rgb red, Rgb blue, Rgb yellow, Rgb black, Rgb white)
         {
-            _blueColor = new AcnhColor("blue", Blue, 609, 80);
-            _redColor = new AcnhColor("red", Red, 670, 80);
-            _yellowColor = new AcnhColor("yellow", Yellow, 730, 80);
-            _blackColor = new AcnhColor("black", Black, 540, 80);
-            _whiteColor = new AcnhColor("white", White, 0, 0);
+            _blueColor = new AcnhColor("blue", blue, 609, 80);
+            _redColor = new AcnhColor("red", red, 670, 80);
+            _yellowColor = new AcnhColor("yellow", yellow, 730, 80);
+            _blackColor = new AcnhColor("black", black, 540, 80);
+            _whiteColor = new AcnhColor("white", white, 0, 0);
             AcnhColor[] colorRange = {_blueColor, _redColor, _yellowColor, _blackColor, _whiteColor};
-            RgbList.AddRange(colorRange);
+            _rgbList.AddRange(colorRange);
         }
-        
-        public void ParseImage(string imagePath, int scale, CancellationToken token)
+
+        /**
+         * Parses image and saves the data in a list
+         */
+        public void ParseImage(string imagePath, int scale)
         {
             var img = Image.FromFile(imagePath);
             var resized = (Bitmap) FixedSize(img, 760 / scale, 460 / scale);
-            var previousColor = "white";
             for (var xCoord = 0; xCoord < 760; xCoord += scale)
             {
                 for (var yCoord = 0; yCoord < 460; yCoord += scale)
@@ -63,7 +65,7 @@ namespace AcnhBulletinPrinter
                     var currentPixel = new Rgb {R = pixelColor.R, G = pixelColor.G, B = pixelColor.B};
                     var smallestDistance = double.MaxValue;
                     var chosenColor = new AcnhColor();
-                    foreach (var currentColor in RgbList)
+                    foreach (var currentColor in _rgbList)
                     {
                         var deltaE = currentPixel.Compare(currentColor.RgbColor, new Cie1976Comparison());
                         if (!(deltaE < smallestDistance)) continue;
@@ -74,34 +76,35 @@ namespace AcnhBulletinPrinter
                     var x = xCoord + 259;
                     var y = yCoord + 168;
 
-                    if (token.IsCancellationRequested)
+                    if (!chosenColor.Name.Equals("white"))
                     {
-                        Console.WriteLine("Cancelled");
-                        return;
-                    }
-
-                    switch (chosenColor.Name)
-                    {
-                        case "black":
-                            // DrawPoint(BlackColor, x, y, previousColor);
-                            DrawPoint(_blackColor, x, y);
-                            previousColor = chosenColor.Name;
-                            break;
-                        case "blue":
-                            DrawPoint(_blueColor, x, y);
-                            previousColor = chosenColor.Name;
-                            break;
-                        case "red":
-                            DrawPoint(_redColor, x, y);
-                            previousColor = chosenColor.Name;
-                            break;
-                        case "yellow":
-                            DrawPoint(_yellowColor, x, y);
-                            previousColor = chosenColor.Name;
-                            break;
+                        PicturePixel picturePixel = new PicturePixel(chosenColor, x, y);
+                        _pixelList.Add(picturePixel);
                     }
                 }
             }
+        }
+
+        /**
+         * Draw the image on the board
+         */
+        public void DrawImage()
+        {
+            foreach (var pixel in _pixelList)
+            {
+                DrawPoint(pixel.AcnhColor, pixel.xPixelCoordinate, pixel.YPixelCoordinate);
+            }
+        }
+
+        public double CalculateDuration()
+        {
+            double duration = Math.Round(_pixelList.Count * 0.062 * 2.15);
+            return duration;
+        }
+
+        public bool TooManyPixel()
+        {
+            return _pixelList.Count > 10000;
         }
 
         /**
@@ -122,6 +125,7 @@ namespace AcnhBulletinPrinter
             TouchPixel(color.ColorXPosition, color.ColorYPosition);
             TouchPixel(x, y);
         }
+
 
         private void TouchPixel(int x, int y)
         {

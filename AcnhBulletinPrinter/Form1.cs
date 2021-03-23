@@ -2,8 +2,6 @@
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using ColorMine.ColorSpaces;
 using Newtonsoft.Json;
@@ -19,27 +17,29 @@ namespace AcnhBulletinPrinter
         private Rgb _black;
         private Rgb _white;
         private int _pollingRate;
-        private CancellationTokenSource source;
-        
+        private BulletinDrawing _bulletinDrawing;
+
+
         public Form1()
         {
             InitializeComponent();
             CheckConfig();
         }
-        
+
         private void CheckConfig()
         {
             var configPath = @AppDomain.CurrentDomain.BaseDirectory + "\\config";
             Directory.CreateDirectory(configPath);
             var folderPath = configPath + "\\config.json";
-        
+
             var scales = new[] {2, 4, 5};
-            foreach(var scale in scales )
+            foreach (var scale in scales)
             {
                 scaleCombobox.Items.Add(scale);
             }
-            scaleCombobox.SelectedIndex= 1;
-            
+
+            scaleCombobox.SelectedIndex = 1;
+
             if (File.Exists(folderPath))
             {
                 var config = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(folderPath));
@@ -61,7 +61,7 @@ namespace AcnhBulletinPrinter
                 _white = new() {R = 255, G = 255, B = 255};
                 var config = new Configuration
                 {
-                    IP = "192.168.0.1", 
+                    IP = "192.168.0.1",
                     Red = _red, Blue = _blue, Yellow = _yellow, Black = _black, White = _white,
                     PollingRate = 31
                 };
@@ -83,20 +83,11 @@ namespace AcnhBulletinPrinter
             {
                 AddLogText(exception.GetType().ToString());
             }
-          
-
         }
 
         private void drawButton_Click(object sender, EventArgs e)
         {
-            BulletinDrawing bulletinDrawing = new BulletinDrawing();
-            bulletinDrawing.SetColors(_red, _blue, _yellow, _black, _white);
-
-            source = new CancellationTokenSource();
-            var token = source.Token;
-            
-            var task = Task.Run(() => bulletinDrawing.ParseImage(_imagePath, int.Parse(scaleCombobox.Text), token), token);
-
+            _bulletinDrawing.DrawImage();
             AddLogText("Drawing, please don't do anything on your console until it is finished.");
         }
 
@@ -110,7 +101,17 @@ namespace AcnhBulletinPrinter
             if (choofdlog.ShowDialog() != DialogResult.OK) return;
             _imagePath = choofdlog.FileName;
             string fileName = Path.GetFileName(_imagePath);
+
+            _bulletinDrawing = new BulletinDrawing();
+            _bulletinDrawing.SetColors(_red, _blue, _yellow, _black, _white);
+            _bulletinDrawing.ParseImage(_imagePath, int.Parse(scaleCombobox.Text));
             AddLogText($"added {fileName}");
+            double duration = _bulletinDrawing.CalculateDuration();
+            AddLogText($"This drawing will take around {duration} seconds");
+            if (_bulletinDrawing.TooManyPixel())
+            {
+                MessageBox.Show("Your drawing won't get completed as there is not enough ink!");
+            }
         }
 
         private void AddLogText(string text)

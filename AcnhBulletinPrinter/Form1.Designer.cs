@@ -54,6 +54,8 @@
             this.logTextbox.Location = new System.Drawing.Point(62, 137);
             this.logTextbox.Multiline = true;
             this.logTextbox.Name = "logTextbox";
+            this.logTextbox.ReadOnly = true;
+            this.logTextbox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.logTextbox.Size = new System.Drawing.Size(296, 188);
             this.logTextbox.TabIndex = 1;
             // 

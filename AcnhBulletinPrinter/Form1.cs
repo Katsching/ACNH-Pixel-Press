@@ -2,6 +2,8 @@
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using ColorMine.ColorSpaces;
 using Newtonsoft.Json;
@@ -17,6 +19,7 @@ namespace AcnhBulletinPrinter
         private Rgb _black;
         private Rgb _white;
         private int _pollingRate;
+        private CancellationTokenSource source;
         
         public Form1()
         {
@@ -86,8 +89,14 @@ namespace AcnhBulletinPrinter
 
         private void drawButton_Click(object sender, EventArgs e)
         {
-            BulletinDrawing.SetColors(_red, _blue, _yellow, _black, _white);
-            BulletinDrawing.ParseImage(_imagePath, int.Parse(scaleCombobox.Text));
+            BulletinDrawing bulletinDrawing = new BulletinDrawing();
+            bulletinDrawing.SetColors(_red, _blue, _yellow, _black, _white);
+
+            source = new CancellationTokenSource();
+            var token = source.Token;
+            
+            var task = Task.Run(() => bulletinDrawing.ParseImage(_imagePath, int.Parse(scaleCombobox.Text), token), token);
+
             AddLogText("Drawing, please don't do anything on your console until it is finished.");
         }
 

@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Threading;
 using ColorMine.ColorSpaces;
 using ColorMine.ColorSpaces.Comparisons;
 
 namespace AcnhBulletinPrinter
 {
-    public static class BulletinDrawing
+    public class BulletinDrawing
     {
         private static Controller _sysBot;
 
-        private static AcnhColor _blueColor;
-        private static AcnhColor _redColor;
-        private static AcnhColor _yellowColor;
-        private static AcnhColor _blackColor;
-        private static AcnhColor _whiteColor;
-        private static readonly List<AcnhColor> RgbList = new();
+        private AcnhColor _blueColor;
+        private AcnhColor _redColor;
+        private AcnhColor _yellowColor;
+        private AcnhColor _blackColor;
+        private AcnhColor _whiteColor;
+        private readonly List<AcnhColor> RgbList = new();
 
         public static string ConnectSysbot(string ipAddress, int pollingRate)
         {
@@ -37,7 +38,7 @@ namespace AcnhBulletinPrinter
             return message;
         }
 
-        public static void SetColors(Rgb Red, Rgb Blue, Rgb Yellow, Rgb Black, Rgb White)
+        public void SetColors(Rgb Red, Rgb Blue, Rgb Yellow, Rgb Black, Rgb White)
         {
             _blueColor = new AcnhColor("blue", Blue, 609, 80);
             _redColor = new AcnhColor("red", Red, 670, 80);
@@ -48,7 +49,7 @@ namespace AcnhBulletinPrinter
             RgbList.AddRange(colorRange);
         }
         
-        public static async void ParseImage(string imagePath, int scale)
+        public void ParseImage(string imagePath, int scale, CancellationToken token)
         {
             var img = Image.FromFile(imagePath);
             var resized = (Bitmap) FixedSize(img, 760 / scale, 460 / scale);
@@ -72,6 +73,12 @@ namespace AcnhBulletinPrinter
 
                     var x = xCoord + 259;
                     var y = yCoord + 168;
+
+                    if (token.IsCancellationRequested)
+                    {
+                        Console.WriteLine("Cancelled");
+                        return;
+                    }
 
                     switch (chosenColor.Name)
                     {
@@ -100,7 +107,7 @@ namespace AcnhBulletinPrinter
         /**
          * No additional color press
          */
-        private static void DrawPointPrevious(AcnhColor color, int x, int y, string previousColor)
+        private void DrawPointPrevious(AcnhColor color, int x, int y, string previousColor)
         {
             if (!previousColor.Equals(color.Name))
             {
@@ -110,13 +117,13 @@ namespace AcnhBulletinPrinter
             TouchPixel(x, y);
         }
 
-        private static void DrawPoint(AcnhColor color, int x, int y)
+        private void DrawPoint(AcnhColor color, int x, int y)
         {
             TouchPixel(color.ColorXPosition, color.ColorYPosition);
             TouchPixel(x, y);
         }
 
-        private static void TouchPixel(int x, int y)
+        private void TouchPixel(int x, int y)
         {
             _sysBot.Bot.touch($"{x} {y}");
         }
@@ -124,7 +131,7 @@ namespace AcnhBulletinPrinter
         /**
          * Fix ratio of the input picture
          */
-        private static Image FixedSize(Image imgPhoto, int width, int height)
+        private Image FixedSize(Image imgPhoto, int width, int height)
         {
             var sourceWidth = imgPhoto.Width;
             var sourceHeight = imgPhoto.Height;

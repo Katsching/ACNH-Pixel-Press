@@ -14,6 +14,8 @@ namespace AcnhBulletinPrinter
         private Rgb _red;
         private Rgb _blue;
         private Rgb _yellow;
+        private Rgb _black;
+        private Rgb _white;
         private int _pollingRate;
         
         public Form1()
@@ -43,6 +45,8 @@ namespace AcnhBulletinPrinter
                 _red = config.Red;
                 _blue = config.Blue;
                 _yellow = config.Yellow;
+                _black = config.Black;
+                _white = config.White;
                 _pollingRate = config.PollingRate;
             }
             else
@@ -50,10 +54,12 @@ namespace AcnhBulletinPrinter
                 _red = new() {R = 240, G = 128, B = 128};
                 _blue = new() {R = 135, G = 206, B = 250};
                 _yellow = new() {R = 255, G = 255, B = 0};
+                _black = new() {R = 0, G = 0, B = 0};
+                _white = new() {R = 255, G = 255, B = 255};
                 var config = new Configuration
                 {
                     IP = "192.168.0.1", 
-                    Red = _red, Blue = _blue, Yellow = _yellow,
+                    Red = _red, Blue = _blue, Yellow = _yellow, Black = _black, White = _white,
                     PollingRate = 31
                 };
                 ipTextbox.Text = config.IP;
@@ -80,7 +86,7 @@ namespace AcnhBulletinPrinter
 
         private void drawButton_Click(object sender, EventArgs e)
         {
-            BulletinDrawing.SetColors(_red, _blue, _yellow);
+            BulletinDrawing.SetColors(_red, _blue, _yellow, _black, _white);
             BulletinDrawing.ParseImage(_imagePath, int.Parse(scaleCombobox.Text));
             AddLogText("Drawing, please don't do anything on your console until it is finished.");
         }

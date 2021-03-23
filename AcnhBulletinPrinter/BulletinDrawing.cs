@@ -37,15 +37,13 @@ namespace AcnhBulletinPrinter
             return message;
         }
 
-        public static void SetColors(Rgb Red, Rgb Blue, Rgb Yellow)
+        public static void SetColors(Rgb Red, Rgb Blue, Rgb Yellow, Rgb Black, Rgb White)
         {
-            Rgb black = new() {R = 0, G = 0, B = 0};
-            Rgb white = new() {R = 255, G = 255, B = 255};
             _blueColor = new AcnhColor("blue", Blue, 609, 80);
             _redColor = new AcnhColor("red", Red, 670, 80);
             _yellowColor = new AcnhColor("yellow", Yellow, 730, 80);
-            _blackColor = new AcnhColor("black", black, 540, 80);
-            _whiteColor = new AcnhColor("white", white, 0, 0);
+            _blackColor = new AcnhColor("black", Black, 540, 80);
+            _whiteColor = new AcnhColor("white", White, 0, 0);
             AcnhColor[] colorRange = {_blueColor, _redColor, _yellowColor, _blackColor, _whiteColor};
             RgbList.AddRange(colorRange);
         }

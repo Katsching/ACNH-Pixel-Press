@@ -9,6 +9,10 @@ namespace AcnhBulletinPrinter
         public Rgb Blue { get; set; }
         public Rgb Yellow { get; set; }
         
+        public Rgb Black { get; set; }
+        
+        public Rgb White { get; set; }
+        
         public int PollingRate { get; set; }
     }
 }

@@ -102,7 +102,7 @@ namespace AcnhBulletinPrinter
 
                 DrawPoint(pixel.AcnhColor, pixel.xPixelCoordinate, pixel.YPixelCoordinate);
                 // numbers from testing
-                await Delay(pollingRate + 88, token);
+                await Delay(pollingRate + 93, token);
             }
         }
 

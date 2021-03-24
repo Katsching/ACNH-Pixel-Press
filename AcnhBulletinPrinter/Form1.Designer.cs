@@ -92,6 +92,7 @@
             this.scaleCombobox.Name = "scaleCombobox";
             this.scaleCombobox.Size = new System.Drawing.Size(50, 24);
             this.scaleCombobox.TabIndex = 6;
+            this.scaleCombobox.SelectedIndexChanged += new System.EventHandler(this.scaleCombobox_SelectedIndexChanged);
             // 
             // imageButton
             // 

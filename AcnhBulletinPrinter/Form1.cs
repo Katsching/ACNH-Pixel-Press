@@ -117,18 +117,10 @@ namespace AcnhBulletinPrinter
 
             if (choofdlog.ShowDialog() != DialogResult.OK) return;
             _imagePath = choofdlog.FileName;
-            string fileName = Path.GetFileName(_imagePath);
-
-            _bulletinDrawing = new BulletinDrawing();
-            _bulletinDrawing.SetColors(_red, _blue, _yellow, _black, _white);
-            _bulletinDrawing.ParseImage(_imagePath, int.Parse(scaleCombobox.Text));
+            var fileName = Path.GetFileName(_imagePath);
             AddLogText($"added {fileName}");
-            double duration = _bulletinDrawing.CalculateDuration();
-            AddLogText($"This drawing will take around {duration} seconds");
-            if (_bulletinDrawing.TooManyPixel())
-            {
-                MessageBox.Show("Your drawing won't get completed as there is not enough ink!");
-            }
+            
+            setImageAndParse();
         }
 
         private void AddLogText(string text)
@@ -142,6 +134,28 @@ namespace AcnhBulletinPrinter
         {
             source.Cancel();
             drawButton.Enabled = true;
+        }
+        
+        private void scaleCombobox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(_bulletinDrawing != null)
+            {
+                setImageAndParse();
+            }
+        }
+        
+        private void setImageAndParse()
+        {
+            _bulletinDrawing = new BulletinDrawing();
+            _bulletinDrawing.SetColors(_red, _blue, _yellow, _black, _white);
+            _bulletinDrawing.ParseImage(_imagePath, int.Parse(scaleCombobox.Text));
+            
+            double duration = _bulletinDrawing.CalculateDuration();
+            AddLogText($"This drawing will take around {duration} seconds");
+            if (_bulletinDrawing.TooManyPixel())
+            {
+                MessageBox.Show("Your drawing won't get completed as there is not enough ink!");
+            }
         }
     }
 }

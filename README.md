@@ -12,4 +12,3 @@ ACNH tool to draw a given image on the bulletin board. It requires a Nintendo Sw
 
 ## Warning
 * The ink is limited, so it's better to select a picture with a lot of bright/white background. It will keep trying to draw even if the ink is empty.
-* Currently, there is no way to stop the drawing. You will have to wait until it finishes or restart your device.

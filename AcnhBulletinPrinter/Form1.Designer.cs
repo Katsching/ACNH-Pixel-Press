@@ -29,6 +29,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.connectButton = new System.Windows.Forms.Button();
             this.logTextbox = new System.Windows.Forms.TextBox();
             this.drawButton = new System.Windows.Forms.Button();
@@ -44,11 +45,13 @@
             this.startXTextbox = new System.Windows.Forms.TextBox();
             this.startYLabel = new System.Windows.Forms.Label();
             this.startYTextbox = new System.Windows.Forms.TextBox();
+            this.previewImage = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize) (this.previewImage)).BeginInit();
             this.SuspendLayout();
             // 
             // connectButton
             // 
-            this.connectButton.Location = new System.Drawing.Point(169, 89);
+            this.connectButton.Location = new System.Drawing.Point(211, 89);
             this.connectButton.Name = "connectButton";
             this.connectButton.Size = new System.Drawing.Size(123, 26);
             this.connectButton.TabIndex = 0;
@@ -68,9 +71,9 @@
             // 
             // drawButton
             // 
-            this.drawButton.Location = new System.Drawing.Point(298, 89);
+            this.drawButton.Location = new System.Drawing.Point(340, 89);
             this.drawButton.Name = "drawButton";
-            this.drawButton.Size = new System.Drawing.Size(89, 26);
+            this.drawButton.Size = new System.Drawing.Size(68, 26);
             this.drawButton.TabIndex = 2;
             this.drawButton.Text = "draw";
             this.drawButton.UseVisualStyleBackColor = true;
@@ -78,7 +81,7 @@
             // 
             // ipTextbox
             // 
-            this.ipTextbox.Location = new System.Drawing.Point(169, 61);
+            this.ipTextbox.Location = new System.Drawing.Point(211, 61);
             this.ipTextbox.Name = "ipTextbox";
             this.ipTextbox.Size = new System.Drawing.Size(123, 22);
             this.ipTextbox.TabIndex = 3;
@@ -95,7 +98,7 @@
             // 
             this.imageButton.Location = new System.Drawing.Point(29, 61);
             this.imageButton.Name = "imageButton";
-            this.imageButton.Size = new System.Drawing.Size(134, 54);
+            this.imageButton.Size = new System.Drawing.Size(80, 54);
             this.imageButton.TabIndex = 7;
             this.imageButton.Text = "Image";
             this.imageButton.UseVisualStyleBackColor = true;
@@ -111,9 +114,9 @@
             // 
             // stopButton
             // 
-            this.stopButton.Location = new System.Drawing.Point(393, 89);
+            this.stopButton.Location = new System.Drawing.Point(414, 89);
             this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(89, 26);
+            this.stopButton.Size = new System.Drawing.Size(68, 26);
             this.stopButton.TabIndex = 9;
             this.stopButton.Text = "stop";
             this.stopButton.UseVisualStyleBackColor = true;
@@ -177,11 +180,21 @@
             this.startYTextbox.Size = new System.Drawing.Size(40, 24);
             this.startYTextbox.TabIndex = 16;
             // 
+            // previewImage
+            // 
+            this.previewImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.previewImage.Location = new System.Drawing.Point(115, 61);
+            this.previewImage.Name = "previewImage";
+            this.previewImage.Size = new System.Drawing.Size(90, 54);
+            this.previewImage.TabIndex = 17;
+            this.previewImage.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(513, 373);
+            this.Controls.Add(this.previewImage);
             this.Controls.Add(this.startYTextbox);
             this.Controls.Add(this.startYLabel);
             this.Controls.Add(this.startXTextbox);
@@ -197,11 +210,15 @@
             this.Controls.Add(this.drawButton);
             this.Controls.Add(this.logTextbox);
             this.Controls.Add(this.connectButton);
+            this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "ACNH Bulletin Printer";
+            ((System.ComponentModel.ISupportInitialize) (this.previewImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.PictureBox previewImage;
 
         private System.Windows.Forms.TextBox startXTextbox;
         private System.Windows.Forms.Label startYLabel;

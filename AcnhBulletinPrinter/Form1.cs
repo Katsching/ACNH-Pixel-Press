@@ -153,6 +153,9 @@ namespace AcnhBulletinPrinter
             var fileName = Path.GetFileName(_imagePath);
             AddLogText($"added {fileName}");
 
+            previewImage.ImageLocation = _imagePath;
+            previewImage.SizeMode =PictureBoxSizeMode.Zoom;
+
             setImageAndParse(int.Parse(resizeCombobox.Text), int.Parse(densityCombobox.Text));
         }
 
@@ -161,6 +164,8 @@ namespace AcnhBulletinPrinter
             var sb = new StringBuilder(logTextbox.Text);
             sb.AppendLine(text);
             logTextbox.Text = sb.ToString();
+            logTextbox.SelectionStart = logTextbox.TextLength;
+            logTextbox.ScrollToCaret();
         }
 
         private void stopButton_Click(object sender, EventArgs e)

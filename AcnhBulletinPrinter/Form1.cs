@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using ColorMine.ColorSpaces;
 using Newtonsoft.Json;
 
@@ -36,13 +37,24 @@ namespace AcnhBulletinPrinter
             Directory.CreateDirectory(configPath);
             var folderPath = configPath + "\\config.json";
 
-            var scales = new[] {2, 4, 5};
-            foreach (var scale in scales)
+            var densities = new[] {2, 4};
+            foreach (var density in densities)
             {
-                scaleCombobox.Items.Add(scale);
+                densityCombobox.Items.Add(density);
             }
 
-            scaleCombobox.SelectedIndex = 1;
+            densityCombobox.SelectedIndex = 1;
+
+            var resizePercentages = new[] {50, 60, 80, 100};
+            foreach (var resizePercentage in resizePercentages)
+            {
+                resizeCombobox.Items.Add(resizePercentage);
+            }
+
+            resizeCombobox.SelectedIndex = 3;
+
+            startXTextbox.Text = "100";
+            startYTextbox.Text = "100";
 
             if (File.Exists(folderPath))
             {
@@ -91,21 +103,42 @@ namespace AcnhBulletinPrinter
 
         private async void drawButton_Click(object sender, EventArgs e)
         {
-            drawButton.Enabled = false;
-            AddLogText("Drawing, please don't do anything on your console until it is finished.");
             source = new CancellationTokenSource();
             var token = source.Token;
             try
             {
-                var drawImage = Task.Run(() => _bulletinDrawing.DrawImage(_pollingRate, token), token);
-                await drawImage;
+                Task drawImage;
+                if (resizeCombobox.Text.Equals("100"))
+                {
+                    drawButton.Enabled = false;
+                    AddLogText("Drawing, please don't do anything on your console until it is finished.");
+                    drawImage = Task.Run(() => _bulletinDrawing.DrawImage(_pollingRate, token, 0, 0), token);
+                    await drawImage;
+                }
+                else
+                {
+                    var startX = int.Parse(startXTextbox.Text);
+                    var startY = int.Parse(startYTextbox.Text);
+                    if (!_bulletinDrawing.checkBoundaries(int.Parse(resizeCombobox.Text), startX, startY))
+                    {
+                        drawButton.Enabled = false;
+                        AddLogText("Drawing, please don't do anything on your console until it is finished.");
+                        drawImage = Task.Run(() => _bulletinDrawing.DrawImage(_pollingRate, token, startX, startY),
+                            token);
+                        await drawImage;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Your drawing will be out of boundary!");
+                    }
+                }
             }
             catch (TaskCanceledException ex)
             {
-                AddLogText("Drawing has been cancelled");
+                AddLogText("Drawing has been cancelled. Please wait a bit for the drawing to stop.");
             }
-            drawButton.Enabled = true;
 
+            drawButton.Enabled = true;
         }
 
         private void imageButton_Click(object sender, EventArgs e)
@@ -119,8 +152,8 @@ namespace AcnhBulletinPrinter
             _imagePath = choofdlog.FileName;
             var fileName = Path.GetFileName(_imagePath);
             AddLogText($"added {fileName}");
-            
-            setImageAndParse();
+
+            setImageAndParse(int.Parse(resizeCombobox.Text), int.Parse(densityCombobox.Text));
         }
 
         private void AddLogText(string text)
@@ -135,26 +168,35 @@ namespace AcnhBulletinPrinter
             source.Cancel();
             drawButton.Enabled = true;
         }
-        
-        private void scaleCombobox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if(_bulletinDrawing != null)
-            {
-                setImageAndParse();
-            }
-        }
-        
-        private void setImageAndParse()
+
+
+        private void setImageAndParse(int resizePercentage, int pixelDensity)
         {
             _bulletinDrawing = new BulletinDrawing();
             _bulletinDrawing.SetColors(_red, _blue, _yellow, _black, _white);
-            _bulletinDrawing.ParseImage(_imagePath, int.Parse(scaleCombobox.Text));
-            
+            // _bulletinDrawing.ParseResizedImage(_imagePath, int.Parse(scaleCombobox.Text));
+            _bulletinDrawing.ParseImage(_imagePath, resizePercentage, pixelDensity);
             double duration = _bulletinDrawing.CalculateDuration();
             AddLogText($"This drawing will take around {duration} seconds");
             if (_bulletinDrawing.TooManyPixel())
             {
                 MessageBox.Show("Your drawing won't get completed as there is not enough ink!");
+            }
+        }
+
+        private void densityCombobox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_bulletinDrawing != null)
+            {
+                setImageAndParse(int.Parse(resizeCombobox.Text), int.Parse(densityCombobox.Text));
+            }
+        }
+
+        private void resizeCombobox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_bulletinDrawing != null)
+            {
+                setImageAndParse(int.Parse(resizeCombobox.Text), int.Parse(densityCombobox.Text));
             }
         }
     }

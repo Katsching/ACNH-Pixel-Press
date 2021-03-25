@@ -51,20 +51,18 @@ namespace AcnhBulletinPrinter
             AcnhColor[] colorRange = {_blueColor, _redColor, _yellowColor, _blackColor, _whiteColor};
             _rgbList.AddRange(colorRange);
         }
-
-        /**
-         * Parses image and saves the data in a list
-         */
-        public void ParseImage(string imagePath, int scale)
+        
+        
+        public void ParseImage(string imagePath, int resizePercentage, int pixelDensity)
         {
             var img = Image.FromFile(imagePath);
-            var resized = (Bitmap) FixedSize(img, 760 / scale, 460 / scale);
-            for (var xCoord = 0; xCoord < 760; xCoord += scale)
-            {
-                for (var yCoord = 0; yCoord < 460; yCoord += scale)
-                {
-                    Color pixelColor = resized.GetPixel(xCoord / scale, yCoord / scale);
 
+            var resized = (Bitmap) FixedSize(img, 760 * resizePercentage/100, 460 * resizePercentage/100);
+            for (var xCoord = 0; xCoord < 760 * resizePercentage/100; xCoord += pixelDensity)
+            {
+                for (var yCoord = 0; yCoord < 460 * resizePercentage/100; yCoord += pixelDensity)
+                {
+                    var pixelColor = resized.GetPixel(xCoord , yCoord);
                     var currentPixel = new Rgb {R = pixelColor.R, G = pixelColor.G, B = pixelColor.B};
                     var smallestDistance = double.MaxValue;
                     var chosenColor = new AcnhColor();
@@ -81,17 +79,18 @@ namespace AcnhBulletinPrinter
 
                     if (!chosenColor.Name.Equals("white"))
                     {
-                        PicturePixel picturePixel = new PicturePixel(chosenColor, x, y);
+                        var picturePixel = new PicturePixel(chosenColor, x, y);
                         _pixelList.Add(picturePixel);
                     }
                 }
             }
         }
+        
 
         /**
          * Draw the image on the board
          */
-        public async Task DrawImage(int pollingRate, CancellationToken token)
+        public async Task DrawImage(int pollingRate, CancellationToken token, int shiftX, int shiftY)
         {
             foreach (var pixel in _pixelList)
             {
@@ -100,7 +99,7 @@ namespace AcnhBulletinPrinter
                     return;
                 }
 
-                DrawPoint(pixel.AcnhColor, pixel.xPixelCoordinate, pixel.YPixelCoordinate);
+                DrawPoint(pixel.AcnhColor, pixel.xPixelCoordinate + shiftX, pixel.YPixelCoordinate + shiftY);
                 // numbers from testing
                 await Delay(pollingRate + 93, token);
             }
@@ -116,6 +115,15 @@ namespace AcnhBulletinPrinter
         public bool TooManyPixel()
         {
             return _pixelList.Count > 10000;
+        }
+
+        public bool checkBoundaries(int resizePercentage, int startX, int startY)
+        {
+            var lastPixel = _pixelList[^1];
+
+            var pixelX = lastPixel.xPixelCoordinate + startX;
+            var pixelY = lastPixel.YPixelCoordinate + startY;
+            return pixelX > 760 + 259  || pixelY > 460 + 168;
         }
 
         /**

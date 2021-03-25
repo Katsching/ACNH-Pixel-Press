@@ -33,18 +33,24 @@
             this.logTextbox = new System.Windows.Forms.TextBox();
             this.drawButton = new System.Windows.Forms.Button();
             this.ipTextbox = new System.Windows.Forms.TextBox();
-            this.scaleLabel = new System.Windows.Forms.Label();
-            this.scaleCombobox = new System.Windows.Forms.ComboBox();
+            this.densityLabel = new System.Windows.Forms.Label();
             this.imageButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.stopButton = new System.Windows.Forms.Button();
+            this.densityCombobox = new System.Windows.Forms.ComboBox();
+            this.resizeCombobox = new System.Windows.Forms.ComboBox();
+            this.resizeLabel = new System.Windows.Forms.Label();
+            this.startXLabel = new System.Windows.Forms.Label();
+            this.startXTextbox = new System.Windows.Forms.TextBox();
+            this.startYLabel = new System.Windows.Forms.Label();
+            this.startYTextbox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // connectButton
             // 
-            this.connectButton.Location = new System.Drawing.Point(187, 105);
+            this.connectButton.Location = new System.Drawing.Point(169, 89);
             this.connectButton.Name = "connectButton";
-            this.connectButton.Size = new System.Drawing.Size(81, 26);
+            this.connectButton.Size = new System.Drawing.Size(123, 26);
             this.connectButton.TabIndex = 0;
             this.connectButton.Text = "connect";
             this.connectButton.UseVisualStyleBackColor = true;
@@ -52,19 +58,19 @@
             // 
             // logTextbox
             // 
-            this.logTextbox.Location = new System.Drawing.Point(62, 137);
+            this.logTextbox.Location = new System.Drawing.Point(29, 121);
             this.logTextbox.Multiline = true;
             this.logTextbox.Name = "logTextbox";
             this.logTextbox.ReadOnly = true;
             this.logTextbox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logTextbox.Size = new System.Drawing.Size(377, 188);
+            this.logTextbox.Size = new System.Drawing.Size(453, 204);
             this.logTextbox.TabIndex = 1;
             // 
             // drawButton
             // 
-            this.drawButton.Location = new System.Drawing.Point(274, 105);
+            this.drawButton.Location = new System.Drawing.Point(298, 89);
             this.drawButton.Name = "drawButton";
-            this.drawButton.Size = new System.Drawing.Size(84, 26);
+            this.drawButton.Size = new System.Drawing.Size(89, 26);
             this.drawButton.TabIndex = 2;
             this.drawButton.Text = "draw";
             this.drawButton.UseVisualStyleBackColor = true;
@@ -72,33 +78,24 @@
             // 
             // ipTextbox
             // 
-            this.ipTextbox.Location = new System.Drawing.Point(187, 77);
+            this.ipTextbox.Location = new System.Drawing.Point(169, 61);
             this.ipTextbox.Name = "ipTextbox";
-            this.ipTextbox.Size = new System.Drawing.Size(121, 22);
+            this.ipTextbox.Size = new System.Drawing.Size(123, 22);
             this.ipTextbox.TabIndex = 3;
             // 
-            // scaleLabel
+            // densityLabel
             // 
-            this.scaleLabel.Location = new System.Drawing.Point(62, 331);
-            this.scaleLabel.Name = "scaleLabel";
-            this.scaleLabel.Size = new System.Drawing.Size(48, 23);
-            this.scaleLabel.TabIndex = 5;
-            this.scaleLabel.Text = "scale";
-            // 
-            // scaleCombobox
-            // 
-            this.scaleCombobox.FormattingEnabled = true;
-            this.scaleCombobox.Location = new System.Drawing.Point(116, 328);
-            this.scaleCombobox.Name = "scaleCombobox";
-            this.scaleCombobox.Size = new System.Drawing.Size(50, 24);
-            this.scaleCombobox.TabIndex = 6;
-            this.scaleCombobox.SelectedIndexChanged += new System.EventHandler(this.scaleCombobox_SelectedIndexChanged);
+            this.densityLabel.Location = new System.Drawing.Point(29, 334);
+            this.densityLabel.Name = "densityLabel";
+            this.densityLabel.Size = new System.Drawing.Size(66, 23);
+            this.densityLabel.TabIndex = 5;
+            this.densityLabel.Text = "Density";
             // 
             // imageButton
             // 
-            this.imageButton.Location = new System.Drawing.Point(62, 77);
+            this.imageButton.Location = new System.Drawing.Point(29, 61);
             this.imageButton.Name = "imageButton";
-            this.imageButton.Size = new System.Drawing.Size(119, 54);
+            this.imageButton.Size = new System.Drawing.Size(134, 54);
             this.imageButton.TabIndex = 7;
             this.imageButton.Text = "Image";
             this.imageButton.UseVisualStyleBackColor = true;
@@ -106,32 +103,96 @@
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(61, 21);
+            this.label1.Location = new System.Drawing.Point(29, 18);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(378, 53);
+            this.label1.Size = new System.Drawing.Size(453, 38);
             this.label1.TabIndex = 8;
             this.label1.Text = "Go to the bulletin board, create a post and select the brush size. Then load your" + " image, connect to your ip address and press draw.\r\n";
             // 
             // stopButton
             // 
-            this.stopButton.Location = new System.Drawing.Point(364, 105);
+            this.stopButton.Location = new System.Drawing.Point(393, 89);
             this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(75, 26);
+            this.stopButton.Size = new System.Drawing.Size(89, 26);
             this.stopButton.TabIndex = 9;
             this.stopButton.Text = "stop";
             this.stopButton.UseVisualStyleBackColor = true;
             this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
             // 
+            // densityCombobox
+            // 
+            this.densityCombobox.FormattingEnabled = true;
+            this.densityCombobox.Location = new System.Drawing.Point(101, 331);
+            this.densityCombobox.Name = "densityCombobox";
+            this.densityCombobox.Size = new System.Drawing.Size(48, 24);
+            this.densityCombobox.TabIndex = 10;
+            this.densityCombobox.SelectedIndexChanged += new System.EventHandler(this.densityCombobox_SelectedIndexChanged);
+            // 
+            // resizeCombobox
+            // 
+            this.resizeCombobox.FormattingEnabled = true;
+            this.resizeCombobox.Location = new System.Drawing.Point(217, 331);
+            this.resizeCombobox.Name = "resizeCombobox";
+            this.resizeCombobox.Size = new System.Drawing.Size(60, 24);
+            this.resizeCombobox.TabIndex = 11;
+            this.resizeCombobox.SelectedIndexChanged += new System.EventHandler(this.resizeCombobox_SelectedIndexChanged);
+            // 
+            // resizeLabel
+            // 
+            this.resizeLabel.Location = new System.Drawing.Point(155, 334);
+            this.resizeLabel.Name = "resizeLabel";
+            this.resizeLabel.Size = new System.Drawing.Size(57, 23);
+            this.resizeLabel.TabIndex = 12;
+            this.resizeLabel.Text = "Resize";
+            // 
+            // startXLabel
+            // 
+            this.startXLabel.Location = new System.Drawing.Point(283, 334);
+            this.startXLabel.Name = "startXLabel";
+            this.startXLabel.Size = new System.Drawing.Size(51, 23);
+            this.startXLabel.TabIndex = 13;
+            this.startXLabel.Text = "StartX";
+            // 
+            // startXTextbox
+            // 
+            this.startXTextbox.Location = new System.Drawing.Point(340, 331);
+            this.startXTextbox.Multiline = true;
+            this.startXTextbox.Name = "startXTextbox";
+            this.startXTextbox.Size = new System.Drawing.Size(40, 24);
+            this.startXTextbox.TabIndex = 14;
+            // 
+            // startYLabel
+            // 
+            this.startYLabel.Location = new System.Drawing.Point(386, 334);
+            this.startYLabel.Name = "startYLabel";
+            this.startYLabel.Size = new System.Drawing.Size(50, 23);
+            this.startYLabel.TabIndex = 15;
+            this.startYLabel.Text = "StartY";
+            // 
+            // startYTextbox
+            // 
+            this.startYTextbox.Location = new System.Drawing.Point(442, 331);
+            this.startYTextbox.Multiline = true;
+            this.startYTextbox.Name = "startYTextbox";
+            this.startYTextbox.Size = new System.Drawing.Size(40, 24);
+            this.startYTextbox.TabIndex = 16;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(506, 367);
+            this.ClientSize = new System.Drawing.Size(513, 373);
+            this.Controls.Add(this.startYTextbox);
+            this.Controls.Add(this.startYLabel);
+            this.Controls.Add(this.startXTextbox);
+            this.Controls.Add(this.startXLabel);
+            this.Controls.Add(this.resizeLabel);
+            this.Controls.Add(this.resizeCombobox);
+            this.Controls.Add(this.densityCombobox);
             this.Controls.Add(this.stopButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.imageButton);
-            this.Controls.Add(this.scaleCombobox);
-            this.Controls.Add(this.scaleLabel);
+            this.Controls.Add(this.densityLabel);
             this.Controls.Add(this.ipTextbox);
             this.Controls.Add(this.drawButton);
             this.Controls.Add(this.logTextbox);
@@ -142,15 +203,24 @@
             this.PerformLayout();
         }
 
+        private System.Windows.Forms.TextBox startXTextbox;
+        private System.Windows.Forms.Label startYLabel;
+        private System.Windows.Forms.TextBox startYTextbox;
+
+        private System.Windows.Forms.Label startXLabel;
+
+        private System.Windows.Forms.ComboBox resizeCombobox;
+        private System.Windows.Forms.Label resizeLabel;
+
+        private System.Windows.Forms.ComboBox densityCombobox;
+
         private System.Windows.Forms.Button stopButton;
 
         private System.Windows.Forms.Label label1;
 
         private System.Windows.Forms.Button imageButton;
 
-        private System.Windows.Forms.ComboBox scaleCombobox;
-
-        private System.Windows.Forms.Label scaleLabel;
+        private System.Windows.Forms.Label densityLabel;
 
         private System.Windows.Forms.TextBox ipTextbox;
 

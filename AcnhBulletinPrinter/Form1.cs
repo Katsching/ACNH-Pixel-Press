@@ -70,10 +70,10 @@ namespace AcnhBulletinPrinter
             }
             else
             {
-                _red = new() {R = 240, G = 128, B = 128};
-                _blue = new() {R = 135, G = 206, B = 250};
-                _yellow = new() {R = 255, G = 255, B = 0};
-                _black = new() {R = 0, G = 0, B = 0};
+                _red = new() {R = 255, G = 204, B = 204};
+                _blue = new() {R = 173, G = 216, B = 230};
+                _yellow = new() {R = 255, G = 255, B = 208};
+                _black = new() {R = 38, G = 38, B = 38};
                 _white = new() {R = 255, G = 255, B = 255};
                 var config = new Configuration
                 {
@@ -93,6 +93,20 @@ namespace AcnhBulletinPrinter
             try
             {
                 var connectionString = BulletinDrawing.ConnectSysbot(ipTextbox.Text, _pollingRate);
+                if (connectionString.Contains("successfully"))
+                {
+                    string jsonPath = @AppDomain.CurrentDomain.BaseDirectory + "\\config\\config.json";
+                    string json = File.ReadAllText(jsonPath);
+                    dynamic jsonObj = JsonConvert.DeserializeObject(json);
+                    if(!jsonObj["IP"].Equals(ipTextbox.Text))
+                    {
+                        jsonObj["IP"] = ipTextbox.Text;
+                        string output = JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
+                        File.WriteAllText(jsonPath, output);
+                    }
+                }
+                
+                
                 AddLogText(connectionString);
             }
             catch (SocketException exception)

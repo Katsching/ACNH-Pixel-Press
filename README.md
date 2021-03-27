@@ -1,4 +1,4 @@
-# ACNH-Bulletin-Printer
+# ACNH-Pixel-Press
 
 ACNH tool to draw a given image on the bulletin board. It requires a Nintendo Switch running custom firmware with [sys-botbase 1.7](https://github.com/olliz0r/sys-botbase).
 

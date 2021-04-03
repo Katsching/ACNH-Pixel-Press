@@ -1,4 +1,4 @@
-﻿namespace AcnhBulletinPrinter
+﻿namespace AcnhPixelPress
 {
     partial class Form1
     {

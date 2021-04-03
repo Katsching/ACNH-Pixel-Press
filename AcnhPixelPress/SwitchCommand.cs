@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace AcnhBulletinPrinter
+namespace AcnhPixelPress
 {
     public static class SwitchCommand
     {

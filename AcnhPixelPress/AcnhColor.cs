@@ -1,6 +1,6 @@
 using ColorMine.ColorSpaces;
 
-namespace AcnhBulletinPrinter
+namespace AcnhPixelPress
 {
     public class AcnhColor
     {

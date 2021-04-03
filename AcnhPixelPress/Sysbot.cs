@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace AcnhBulletinPrinter
+namespace AcnhPixelPress
 {
     public class Sysbot
     {

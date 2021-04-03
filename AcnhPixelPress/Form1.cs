@@ -9,7 +9,7 @@ using System.Windows.Forms.VisualStyles;
 using ColorMine.ColorSpaces;
 using Newtonsoft.Json;
 
-namespace AcnhBulletinPrinter
+namespace AcnhPixelPress
 {
     public partial class Form1 : Form
     {

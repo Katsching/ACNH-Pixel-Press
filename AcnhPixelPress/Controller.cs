@@ -1,4 +1,4 @@
-﻿namespace AcnhBulletinPrinter
+﻿namespace AcnhPixelPress
 {
     public class Controller
     {

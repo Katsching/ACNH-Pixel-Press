@@ -9,7 +9,7 @@ using ColorMine.ColorSpaces;
 using ColorMine.ColorSpaces.Comparisons;
 using static System.Threading.Tasks.Task;
 
-namespace AcnhBulletinPrinter
+namespace AcnhPixelPress
 {
     public class BulletinDrawing
     {

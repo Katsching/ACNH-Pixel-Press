@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using ColorMine.ColorSpaces;
 using Newtonsoft.Json;
 
@@ -22,7 +21,6 @@ namespace AcnhPixelPress
         private int _pollingRate;
         private BulletinDrawing _bulletinDrawing;
         private CancellationTokenSource source;
-        private Task drawImage;
 
 
         public Form1()
@@ -98,15 +96,15 @@ namespace AcnhPixelPress
                     string jsonPath = @AppDomain.CurrentDomain.BaseDirectory + "\\config\\config.json";
                     string json = File.ReadAllText(jsonPath);
                     dynamic jsonObj = JsonConvert.DeserializeObject(json);
-                    if(!jsonObj["IP"].Equals(ipTextbox.Text))
+                    if (!jsonObj["IP"].Equals(ipTextbox.Text))
                     {
                         jsonObj["IP"] = ipTextbox.Text;
-                        string output = JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
+                        string output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
                         File.WriteAllText(jsonPath, output);
                     }
                 }
-                
-                
+
+
                 AddLogText(connectionString);
             }
             catch (SocketException exception)
@@ -126,18 +124,18 @@ namespace AcnhPixelPress
                 {
                     drawButton.Enabled = false;
                     AddLogText("Drawing, please don't do anything on your console until it is finished.");
-                    drawImage = Task.Run(() => _bulletinDrawing.DrawImage(_pollingRate, token, 0, 0), token);
+                    drawImage = Task.Run(() => _bulletinDrawing.DrawImage(_pollingRate, 0, 0, token), token);
                     await drawImage;
                 }
                 else
                 {
                     var startX = int.Parse(startXTextbox.Text);
                     var startY = int.Parse(startYTextbox.Text);
-                    if (!_bulletinDrawing.checkBoundaries(int.Parse(resizeCombobox.Text), startX, startY))
+                    if (!_bulletinDrawing.CheckBoundaries(int.Parse(resizeCombobox.Text), startX, startY))
                     {
                         drawButton.Enabled = false;
                         AddLogText("Drawing, please don't do anything on your console until it is finished.");
-                        drawImage = Task.Run(() => _bulletinDrawing.DrawImage(_pollingRate, token, startX, startY),
+                        drawImage = Task.Run(() => _bulletinDrawing.DrawImage(_pollingRate, startX, startY, token),
                             token);
                         await drawImage;
                     }
@@ -147,9 +145,16 @@ namespace AcnhPixelPress
                     }
                 }
             }
-            catch (TaskCanceledException ex)
+            catch (TaskCanceledException)
             {
                 AddLogText("Drawing has been cancelled. Please wait a bit for the drawing to stop.");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(
+                    "Please select your image and connect to your Nintendo Switch. You will have to reconnect if your Switch went into Sleep Mode.",
+                    "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             drawButton.Enabled = true;
@@ -168,9 +173,9 @@ namespace AcnhPixelPress
             AddLogText($"added {fileName}");
 
             previewImage.ImageLocation = _imagePath;
-            previewImage.SizeMode =PictureBoxSizeMode.Zoom;
+            previewImage.SizeMode = PictureBoxSizeMode.Zoom;
 
-            setImageAndParse(int.Parse(resizeCombobox.Text), int.Parse(densityCombobox.Text));
+            SetImageAndParse(int.Parse(resizeCombobox.Text), int.Parse(densityCombobox.Text));
         }
 
         private void AddLogText(string text)
@@ -189,12 +194,11 @@ namespace AcnhPixelPress
         }
 
 
-        private void setImageAndParse(int resizePercentage, int pixelDensity)
+        private void SetImageAndParse(int resizePercentage, int pixelDensity)
         {
             _bulletinDrawing = new BulletinDrawing();
             _bulletinDrawing.SetColors(_red, _blue, _yellow, _black, _white);
-            // _bulletinDrawing.ParseResizedImage(_imagePath, int.Parse(scaleCombobox.Text));
-            _bulletinDrawing.ParseImage(_imagePath, resizePercentage, pixelDensity);
+            _bulletinDrawing.ParseImage(_imagePath, resizePercentage, pixelDensity, blackWhiteCheckbox.Checked);
             double duration = _bulletinDrawing.CalculateDuration();
             AddLogText($"This drawing will take around {duration} seconds");
             if (_bulletinDrawing.TooManyPixel())
@@ -207,7 +211,7 @@ namespace AcnhPixelPress
         {
             if (_bulletinDrawing != null)
             {
-                setImageAndParse(int.Parse(resizeCombobox.Text), int.Parse(densityCombobox.Text));
+                SetImageAndParse(int.Parse(resizeCombobox.Text), int.Parse(densityCombobox.Text));
             }
         }
 
@@ -215,7 +219,15 @@ namespace AcnhPixelPress
         {
             if (_bulletinDrawing != null)
             {
-                setImageAndParse(int.Parse(resizeCombobox.Text), int.Parse(densityCombobox.Text));
+                SetImageAndParse(int.Parse(resizeCombobox.Text), int.Parse(densityCombobox.Text));
+            }
+        }
+
+        private void blackWhiteCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_imagePath != "")
+            {
+                SetImageAndParse(int.Parse(resizeCombobox.Text), int.Parse(densityCombobox.Text));
             }
         }
     }

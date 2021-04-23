@@ -53,11 +53,16 @@ namespace AcnhPixelPress
         }
         
         
-        public void ParseImage(string imagePath, int resizePercentage, int pixelDensity)
+        public void ParseImage(string imagePath, int resizePercentage, int pixelDensity, bool blackWhite)
         {
             var img = Image.FromFile(imagePath);
-
             var resized = (Bitmap) FixedSize(img, 760 * resizePercentage/100, 460 * resizePercentage/100);
+
+            if (blackWhite)
+            {
+                ConvertToBlackWhite(resized); 
+            }
+
             for (var xCoord = 0; xCoord < 760 * resizePercentage/100; xCoord += pixelDensity)
             {
                 for (var yCoord = 0; yCoord < 460 * resizePercentage/100; yCoord += pixelDensity)
@@ -86,11 +91,30 @@ namespace AcnhPixelPress
             }
         }
         
+        private static void ConvertToBlackWhite(Image sourceImage)
+        {
+            using var gr = Graphics.FromImage(sourceImage);
+            var grayMatrix = new[]
+            { 
+                new[] { 0.299f, 0.299f, 0.299f, 0, 0 }, 
+                new[] { 0.587f, 0.587f, 0.587f, 0, 0 }, 
+                new[] { 0.114f, 0.114f, 0.114f, 0, 0 }, 
+                new float[] { 0,      0,      0,      1, 0 }, 
+                new float[] { 0,      0,      0,      0, 1 } 
+            };
+
+            var ia = new ImageAttributes();
+            ia.SetColorMatrix(new ColorMatrix(grayMatrix));
+            ia.SetThreshold(0.7f);
+            var rc = new Rectangle(0, 0, sourceImage.Width, sourceImage.Height);
+            gr.DrawImage(sourceImage, rc, 0, 0, sourceImage.Width, sourceImage.Height, GraphicsUnit.Pixel, ia);
+        }
+        
 
         /**
          * Draw the image on the board
          */
-        public async Task DrawImage(int pollingRate, CancellationToken token, int shiftX, int shiftY)
+        public async Task DrawImage(int pollingRate, int shiftX, int shiftY, CancellationToken token)
         {
             foreach (var pixel in _pixelList)
             {
@@ -117,7 +141,7 @@ namespace AcnhPixelPress
             return _pixelList.Count > 10000;
         }
 
-        public bool checkBoundaries(int resizePercentage, int startX, int startY)
+        public bool CheckBoundaries(int resizePercentage, int startX, int startY)
         {
             var lastPixel = _pixelList[^1];
 

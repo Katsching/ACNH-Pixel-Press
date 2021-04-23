@@ -46,6 +46,7 @@
             this.startYLabel = new System.Windows.Forms.Label();
             this.startYTextbox = new System.Windows.Forms.TextBox();
             this.previewImage = new System.Windows.Forms.PictureBox();
+            this.blackWhiteCheckbox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize) (this.previewImage)).BeginInit();
             this.SuspendLayout();
             // 
@@ -189,11 +190,22 @@
             this.previewImage.TabIndex = 17;
             this.previewImage.TabStop = false;
             // 
+            // blackWhiteCheckbox
+            // 
+            this.blackWhiteCheckbox.Location = new System.Drawing.Point(340, 59);
+            this.blackWhiteCheckbox.Name = "blackWhiteCheckbox";
+            this.blackWhiteCheckbox.Size = new System.Drawing.Size(131, 24);
+            this.blackWhiteCheckbox.TabIndex = 18;
+            this.blackWhiteCheckbox.Text = "Black && White";
+            this.blackWhiteCheckbox.UseVisualStyleBackColor = true;
+            this.blackWhiteCheckbox.CheckedChanged += new System.EventHandler(this.blackWhiteCheckbox_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(513, 373);
+            this.Controls.Add(this.blackWhiteCheckbox);
             this.Controls.Add(this.previewImage);
             this.Controls.Add(this.startYTextbox);
             this.Controls.Add(this.startYLabel);
@@ -217,6 +229,8 @@
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.CheckBox blackWhiteCheckbox;
 
         private System.Windows.Forms.PictureBox previewImage;
 

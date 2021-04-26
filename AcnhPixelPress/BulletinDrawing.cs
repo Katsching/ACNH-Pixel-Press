@@ -30,7 +30,8 @@ namespace AcnhPixelPress
             try
             {
                 _sysBot.Connect(ipAddress, "6000");
-                message = "Connected successfully";
+                var version = _sysBot.Bot.GetVersion();
+                message = $"Connected successfully, sys-botbase {version} detected!";
             }
             catch (Exception e)
             {

@@ -1,4 +1,6 @@
 ﻿using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 
 namespace AcnhPixelPress
 {
@@ -8,7 +10,12 @@ namespace AcnhPixelPress
         private int Port = 6000;
         private Socket Connection = new Socket(SocketType.Stream, ProtocolType.Tcp);
         private bool Connected { get; set; }
-        public int MaximumTransferSize { get { return 8192; } }
+
+        public int MaximumTransferSize
+        {
+            get { return 8192; }
+        }
+
         private int defaultSleepTime = 100;
 
         private readonly object _sync = new object();
@@ -33,11 +40,11 @@ namespace AcnhPixelPress
                 Connected = false;
             }
         }
-        
+
         private int ReadInternal(byte[] buffer)
         {
             int br = Connection.Receive(buffer, 0, 1, SocketFlags.None);
-            while (buffer[br - 1] != (byte)'\n')
+            while (buffer[br - 1] != (byte) '\n')
                 br += Connection.Receive(buffer, br, 1, SocketFlags.None);
             return br;
         }
@@ -49,20 +56,31 @@ namespace AcnhPixelPress
             lock (_sync)
                 return ReadInternal(buffer);
         }
-        
+
         public void sendPollRate(int pollingRate)
         {
             SendInternal(SwitchCommand.SetPollingRate(pollingRate));
         }
-        
+
         public void touch(string data)
         {
-            SendInternal(SwitchCommand.touchString(data));
+            SendInternal(SwitchCommand.TouchString(data));
         }
-        
+
         public void touchHold(string data, int time)
         {
-            SendInternal(SwitchCommand.touchHoldString(data, time));
+            SendInternal(SwitchCommand.TouchHoldString(data, time));
+        }
+
+        public string GetVersion()
+        {
+            var cmd = SwitchCommand.Version();
+            SendInternal(cmd);
+            Thread.Sleep(1 + defaultSleepTime);
+            var buffer = new byte[9];
+            var _ = ReadInternal(buffer);
+            var version = Encoding.UTF8.GetString(buffer).TrimEnd('\0').TrimEnd('\n');
+            return version;
         }
     }
 }

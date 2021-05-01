@@ -20,7 +20,7 @@ namespace AcnhPixelPress
         private Rgb _white;
         private int _pollingRate;
         private BulletinDrawing _bulletinDrawing;
-        private CancellationTokenSource source;
+        private CancellationTokenSource _source;
 
 
         public Form1()
@@ -96,7 +96,7 @@ namespace AcnhPixelPress
                     string jsonPath = @AppDomain.CurrentDomain.BaseDirectory + "\\config\\config.json";
                     string json = File.ReadAllText(jsonPath);
                     dynamic jsonObj = JsonConvert.DeserializeObject(json);
-                    if (!jsonObj["IP"].Equals(ipTextbox.Text))
+                    if (jsonObj != null && !jsonObj["IP"].Equals(ipTextbox.Text))
                     {
                         jsonObj["IP"] = ipTextbox.Text;
                         string output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
@@ -115,8 +115,8 @@ namespace AcnhPixelPress
 
         private async void drawButton_Click(object sender, EventArgs e)
         {
-            source = new CancellationTokenSource();
-            var token = source.Token;
+            _source = new CancellationTokenSource();
+            var token = _source.Token;
             try
             {
                 Task drawImage;
@@ -163,7 +163,7 @@ namespace AcnhPixelPress
         private void imageButton_Click(object sender, EventArgs e)
         {
             var choofdlog = new OpenFileDialog();
-            const string filter = "image files (*.jpg, *.png)|*.jpg; *png";
+            const string filter = "image files (*.jpg, *.png, *.gif)|*.jpg; *.png; *.gif";
             choofdlog.Filter = filter;
             choofdlog.FilterIndex = 1;
 
@@ -172,8 +172,8 @@ namespace AcnhPixelPress
             var fileName = Path.GetFileName(_imagePath);
             AddLogText($"added {fileName}");
 
-            previewImage.ImageLocation = _imagePath;
-            previewImage.SizeMode = PictureBoxSizeMode.Zoom;
+            loadedImage.ImageLocation = _imagePath;
+            loadedImage.SizeMode = PictureBoxSizeMode.Zoom;
 
             SetImageAndParse(int.Parse(resizeCombobox.Text), int.Parse(densityCombobox.Text));
         }
@@ -189,7 +189,7 @@ namespace AcnhPixelPress
 
         private void stopButton_Click(object sender, EventArgs e)
         {
-            source.Cancel();
+            _source.Cancel();
             drawButton.Enabled = true;
         }
 
@@ -228,6 +228,29 @@ namespace AcnhPixelPress
             if (_imagePath != "")
             {
                 SetImageAndParse(int.Parse(resizeCombobox.Text), int.Parse(densityCombobox.Text));
+            }
+        }
+
+        private void previewButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var startX = int.Parse(startXTextbox.Text);
+                var startY = int.Parse(startYTextbox.Text);
+                if (resizeCombobox.Text.Equals("100"))
+                {
+                    startX = 0;
+                    startY = 0;
+                }
+
+                var previewImage = _bulletinDrawing.CreatePreviewImage(startX, startY);
+                var window = new ImageScreen();
+                window.SetPreview(previewImage);
+                window.Show();
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("Please load an image first!");
             }
         }
     }

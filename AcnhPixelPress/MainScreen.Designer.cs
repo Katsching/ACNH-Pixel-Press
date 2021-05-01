@@ -45,14 +45,15 @@
             this.startXTextbox = new System.Windows.Forms.TextBox();
             this.startYLabel = new System.Windows.Forms.Label();
             this.startYTextbox = new System.Windows.Forms.TextBox();
-            this.previewImage = new System.Windows.Forms.PictureBox();
+            this.loadedImage = new System.Windows.Forms.PictureBox();
             this.blackWhiteCheckbox = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize) (this.previewImage)).BeginInit();
+            this.previewButton = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize) (this.loadedImage)).BeginInit();
             this.SuspendLayout();
             // 
             // connectButton
             // 
-            this.connectButton.Location = new System.Drawing.Point(211, 89);
+            this.connectButton.Location = new System.Drawing.Point(274, 89);
             this.connectButton.Name = "connectButton";
             this.connectButton.Size = new System.Drawing.Size(123, 26);
             this.connectButton.TabIndex = 0;
@@ -67,12 +68,12 @@
             this.logTextbox.Name = "logTextbox";
             this.logTextbox.ReadOnly = true;
             this.logTextbox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logTextbox.Size = new System.Drawing.Size(453, 204);
+            this.logTextbox.Size = new System.Drawing.Size(516, 204);
             this.logTextbox.TabIndex = 1;
             // 
             // drawButton
             // 
-            this.drawButton.Location = new System.Drawing.Point(340, 89);
+            this.drawButton.Location = new System.Drawing.Point(403, 89);
             this.drawButton.Name = "drawButton";
             this.drawButton.Size = new System.Drawing.Size(68, 26);
             this.drawButton.TabIndex = 2;
@@ -82,7 +83,7 @@
             // 
             // ipTextbox
             // 
-            this.ipTextbox.Location = new System.Drawing.Point(211, 61);
+            this.ipTextbox.Location = new System.Drawing.Point(274, 61);
             this.ipTextbox.Name = "ipTextbox";
             this.ipTextbox.Size = new System.Drawing.Size(123, 22);
             this.ipTextbox.TabIndex = 3;
@@ -99,7 +100,7 @@
             // 
             this.imageButton.Location = new System.Drawing.Point(29, 61);
             this.imageButton.Name = "imageButton";
-            this.imageButton.Size = new System.Drawing.Size(80, 54);
+            this.imageButton.Size = new System.Drawing.Size(66, 54);
             this.imageButton.TabIndex = 7;
             this.imageButton.Text = "Image";
             this.imageButton.UseVisualStyleBackColor = true;
@@ -115,7 +116,7 @@
             // 
             // stopButton
             // 
-            this.stopButton.Location = new System.Drawing.Point(414, 89);
+            this.stopButton.Location = new System.Drawing.Point(477, 89);
             this.stopButton.Name = "stopButton";
             this.stopButton.Size = new System.Drawing.Size(68, 26);
             this.stopButton.TabIndex = 9;
@@ -181,18 +182,18 @@
             this.startYTextbox.Size = new System.Drawing.Size(40, 24);
             this.startYTextbox.TabIndex = 16;
             // 
-            // previewImage
+            // loadedImage
             // 
-            this.previewImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.previewImage.Location = new System.Drawing.Point(115, 61);
-            this.previewImage.Name = "previewImage";
-            this.previewImage.Size = new System.Drawing.Size(90, 54);
-            this.previewImage.TabIndex = 17;
-            this.previewImage.TabStop = false;
+            this.loadedImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.loadedImage.Location = new System.Drawing.Point(101, 61);
+            this.loadedImage.Name = "loadedImage";
+            this.loadedImage.Size = new System.Drawing.Size(90, 54);
+            this.loadedImage.TabIndex = 17;
+            this.loadedImage.TabStop = false;
             // 
             // blackWhiteCheckbox
             // 
-            this.blackWhiteCheckbox.Location = new System.Drawing.Point(340, 59);
+            this.blackWhiteCheckbox.Location = new System.Drawing.Point(403, 59);
             this.blackWhiteCheckbox.Name = "blackWhiteCheckbox";
             this.blackWhiteCheckbox.Size = new System.Drawing.Size(131, 24);
             this.blackWhiteCheckbox.TabIndex = 18;
@@ -200,13 +201,24 @@
             this.blackWhiteCheckbox.UseVisualStyleBackColor = true;
             this.blackWhiteCheckbox.CheckedChanged += new System.EventHandler(this.blackWhiteCheckbox_CheckedChanged);
             // 
+            // previewButton
+            // 
+            this.previewButton.Location = new System.Drawing.Point(197, 61);
+            this.previewButton.Name = "previewButton";
+            this.previewButton.Size = new System.Drawing.Size(71, 54);
+            this.previewButton.TabIndex = 19;
+            this.previewButton.Text = "Preview";
+            this.previewButton.UseVisualStyleBackColor = true;
+            this.previewButton.Click += new System.EventHandler(this.previewButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(513, 373);
+            this.ClientSize = new System.Drawing.Size(580, 373);
+            this.Controls.Add(this.previewButton);
             this.Controls.Add(this.blackWhiteCheckbox);
-            this.Controls.Add(this.previewImage);
+            this.Controls.Add(this.loadedImage);
             this.Controls.Add(this.startYTextbox);
             this.Controls.Add(this.startYLabel);
             this.Controls.Add(this.startXTextbox);
@@ -225,14 +237,16 @@
             this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "ACNH Bulletin Printer";
-            ((System.ComponentModel.ISupportInitialize) (this.previewImage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.loadedImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
+        private System.Windows.Forms.Button previewButton;
+
         private System.Windows.Forms.CheckBox blackWhiteCheckbox;
 
-        private System.Windows.Forms.PictureBox previewImage;
+        private System.Windows.Forms.PictureBox loadedImage;
 
         private System.Windows.Forms.TextBox startXTextbox;
         private System.Windows.Forms.Label startYLabel;
